@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     });
 
     if (existingUserVerifiedByUsername) {
-      Response.json(
+      return Response.json(
         {
           success: false,
           message: "User already exists",
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
 
     if (existingUserVerifiedByEmail) {
       if (existingUserVerifiedByEmail.isVerified) {
-        Response.json(
+        return Response.json(
           {
             success: false,
             message: "User already exists with this email",
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
       verifyCode
     );
     if (!emailResponse.success) {
-      Response.json(
+      return Response.json(
         {
           success: false,
           message: emailResponse.message,
@@ -90,7 +90,7 @@ export async function POST(request: Request) {
       );
     }
 
-    Response.json(
+    return Response.json(
       {
         success: true,
         message: "User registered successfully, verification email sent",
@@ -101,7 +101,7 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.log("Error registering user", error);
-    Response.json(
+    return Response.json(
       {
         success: false,
         message: "Error registering user",
