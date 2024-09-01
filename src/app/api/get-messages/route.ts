@@ -27,7 +27,7 @@ export async function GET(request: Request) {
             { $match: { _id: userId } },
             { $unwind: "$messages" },
             { $sort: { "messages.createdAt": -1 } },
-            {$group: {_id: "$_id", messages: {$push: "$messages"}}}
+            { $group: { _id: "$_id", messages: { $push: "$messages" } } }
         ])
 
         if (!user || user.length === 0) {
@@ -45,7 +45,11 @@ export async function GET(request: Request) {
             status: 200,
         });
     } catch (error) {
-        
+        console.log("Unable to fetch user messages", error);
+        return sendJsonResponse({
+            success: false,
+            message: "Unable to fetch user messages",
+            status: 500,
+        });
     }
-
 }
