@@ -1,6 +1,6 @@
 type JsonResponseOptions = {
     success: boolean;
-    message: string;
+    message?: string;
     status: number;
     data?: object;
 };
@@ -10,7 +10,7 @@ export const sendJsonResponse = (
 ) => {
     return Response.json({
         success,
-        message,
+        ...(message && { message }),
         ...(data && { data }),
     },
         {
