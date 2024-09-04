@@ -2,12 +2,36 @@ import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import bcrypt from "bcryptjs";
 import { sendVerificationEmail } from "@/helpers/sendVerificationEmail";
+import { signUpSchema } from "@/schemas/signUpSchema";
 
 export async function POST(request: Request) {
   await dbConnect();
 
   try {
     const { username, email, password } = await request.json();
+
+    // zod validation
+    const result = signUpSchema.safeParse({ username, email, password });
+    if (!result.success) {
+      const usernameErrors = result.error.format().username?._errors || [];
+      const emailErrors = result.error.format().email?._errors || [];
+      const passwordErrors = result.error.format().password?._errors || [];
+      const errors = [...usernameErrors, ...emailErrors, ...passwordErrors];  
+
+      return Response.json(
+        {
+          success: false,
+          message:
+            errors?.length > 0
+              ? errors.join(", ")
+              : "Invalid parameters",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
 
     const existingUserVerifiedByUsername = await UserModel.findOne({
       username,
