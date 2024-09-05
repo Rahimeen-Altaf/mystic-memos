@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-import moongose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface Message extends Document {
   content: string;
@@ -69,6 +68,6 @@ const UserSchema: Schema<User> = new Schema({
 
 const UserModel =
   (mongoose.models.User as mongoose.Model<User>) ||
-  moongose.model<User>("User", UserSchema);
+  mongoose.model<User>("User", UserSchema);
 
 export default UserModel;
