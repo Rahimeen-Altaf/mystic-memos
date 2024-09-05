@@ -2,16 +2,17 @@ type JsonResponseOptions = {
     success: boolean;
     message?: string;
     status: number;
-    data?: object;
+    dataName?: string; // Name of the key
+    dataValue?: object; // Value for that key
 };
 
 export const sendJsonResponse = (
-    { success, message, status, data }: JsonResponseOptions
+    { success, message, status, dataName, dataValue }: JsonResponseOptions
 ) => {
     return Response.json({
         success,
         ...(message && { message }),
-        ...(data && { data }),
+        ...(dataName && dataValue && { [dataName]: dataValue }), // Dynamic key
     },
         {
             status,

@@ -41,7 +41,8 @@ export async function GET(request: Request) {
         return sendJsonResponse({
             success: true,
             message: "User messages fetched successfully",
-            data: { messages: user[0].messages },
+            dataName: "messages",
+            dataValue: user[0].messages,
             status: 200,
         });
     } catch (error) {
