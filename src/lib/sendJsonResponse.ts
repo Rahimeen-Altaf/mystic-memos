@@ -3,7 +3,7 @@ type JsonResponseOptions = {
     message?: string;
     status: number;
     dataName?: string; // Name of the key
-    dataValue?: object; // Value for that key
+    dataValue?: any; // Value for that key
 };
 
 export const sendJsonResponse = (

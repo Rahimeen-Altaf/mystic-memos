@@ -10,7 +10,7 @@ import { acceptMessageSchema } from "@/schemas/acceptMessageSchema";
 import { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
-import { CloudFog, Loader2, RefreshCcw } from "lucide-react";
+import { Loader2, RefreshCcw } from "lucide-react";
 import { User } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
@@ -20,16 +20,14 @@ const UserDashboard = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSwitchLoading, setIsSwitchLoading] = useState<boolean>(true);
+  const [profileUrl, setProfileUrl] = useState<string>("");
 
   const { toast } = useToast();
 
   const handleDeleteMessage = (messageId: string) => {
-    setMessages((prevMessages) => {
-      const filteredMessages = prevMessages.filter(
-        (msg) => msg.id !== messageId
-      );
-      return filteredMessages;
-    });
+    setMessages((prevMessages) =>
+      prevMessages.filter((message) => message._id !== messageId)
+    );
   };
 
   const { data: session } = useSession();
@@ -120,11 +118,11 @@ const UserDashboard = () => {
     if (!session || !session.user) return;
     fetchAcceptMessages();
     fetchMessages();
-  }, [session, setValue, fetchAcceptMessages, fetchMessages]);
 
-  const { username } = (session?.user as User) || "user";
-  const baseUrl = `${window.location.protocol}//${window.location.host}`;
-  const profileUrl = `${baseUrl}/u/${username}`;
+    const { username } = (session?.user as User) || "user";
+    const baseUrl = `${window.location.protocol}//${window.location.host}`;
+    setProfileUrl(`${baseUrl}/u/${username}`);
+  }, [session, setValue, fetchAcceptMessages, fetchMessages]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(profileUrl);

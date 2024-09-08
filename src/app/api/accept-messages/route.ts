@@ -1,9 +1,8 @@
 import dbConnect from "@/lib/dbConnect";
-import UserModel from "@/model/User";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/options";
-import { User } from "next-auth";
 import { sendJsonResponse } from "@/lib/sendJsonResponse";
+import UserModel from "@/model/User";
+import { getServerSession, User } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/options";
 
 export async function POST(request: Request) {
     await dbConnect();
@@ -35,7 +34,8 @@ export async function POST(request: Request) {
             return sendJsonResponse({
                 success: true,
                 message: "User acceptance status updated successfully",
-                data: { updatedUser: updatedUser },
+                dataName: "updatedUser",
+                dataValue: updatedUser,
                 status: 200,
             });
         }
@@ -81,7 +81,8 @@ export async function GET(request: Request) {
         return sendJsonResponse({
             success: true,
             message: "message acceptance status found",
-            data: { isAcceptingMessages: foundUser.isAcceptingMessages },
+            dataName: "isAcceptingMessages",
+            dataValue: foundUser.isAcceptingMessages,
             status: 200,
         });
     } catch (error) {
