@@ -8,6 +8,7 @@ export async function POST(request: Request) {
 
     const { username, content } = await request.json();
 
+    // zod validation
     const result = messageSchema.safeParse({ content });
 
     if (!result.success) {

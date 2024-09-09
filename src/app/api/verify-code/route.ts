@@ -12,12 +12,8 @@ export async function POST(request: Request) {
 
         const decodedUsername = decodeURIComponent(username);
 
-        const codeForParse = {
-            code: code,
-        };
-
         // validate with zod
-        const result = verifySchema.safeParse(codeForParse);
+        const result = verifySchema.safeParse({ code });
 
         if (!result.success) {
             const codeErrors = result.error.format().code?._errors || [];

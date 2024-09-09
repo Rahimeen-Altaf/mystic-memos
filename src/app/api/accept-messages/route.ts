@@ -3,6 +3,7 @@ import { sendJsonResponse } from "@/lib/sendJsonResponse";
 import UserModel from "@/model/User";
 import { getServerSession, User } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options";
+import { acceptMessageSchema } from "@/schemas/acceptMessageSchema";
 
 export async function POST(request: Request) {
     await dbConnect();
@@ -21,6 +22,17 @@ export async function POST(request: Request) {
 
     const userId = user._id;
     const { acceptMessages } = await request.json();
+
+    // zod validation
+    const zodResult = acceptMessageSchema.safeParse({ acceptMessages });
+    if (!zodResult.success) {
+        const acceptMessagesErrors = zodResult.error.format().acceptMessages?._errors || [];
+        return sendJsonResponse({
+            success: false,
+            message: acceptMessagesErrors?.length > 0 ? acceptMessagesErrors.join(", ") : "Invalid parameters",
+            status: 400,
+        });
+    }
 
     try {
         const updatedUser = await UserModel.findByIdAndUpdate(userId, { isAcceptingMessages: acceptMessages }, { new: true });
