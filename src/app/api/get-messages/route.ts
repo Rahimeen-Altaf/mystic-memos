@@ -33,7 +33,7 @@ export async function GET(request: Request) {
         if (!user || user.length === 0) {
             return sendJsonResponse({
                 success: false,
-                message: "user not found",
+                message: "User has no messages",
                 status: 404,
             });
         }

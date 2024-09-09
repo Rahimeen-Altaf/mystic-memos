@@ -1,7 +1,8 @@
 import dbConnect from "@/lib/dbConnect";
+import { sendJsonResponse } from "@/lib/sendJsonResponse";
 import UserModel from "@/model/User";
-import { z } from "zod";
 import { usernameValidation } from "@/schemas/signUpSchema";
+import { z } from "zod";
 
 const usernameQuerySchema = z.object({
   username: usernameValidation,
@@ -22,18 +23,14 @@ export async function GET(request: Request) {
     if (!result.success) {
       const usernameErrors = result.error.format().username?._errors || [];
 
-      return Response.json(
-        {
-          success: false,
-          message:
-            usernameErrors?.length > 0
-              ? usernameErrors.join(", ")
-              : "Invalid query parameters",
-        },
-        {
-          status: 400,
-        }
-      );
+      return sendJsonResponse({
+        success: false,
+        message:
+          usernameErrors?.length > 0
+            ? usernameErrors.join(", ")
+            : "Invalid query parameters",
+        status: 400,
+      });
     }
 
     const { username } = result.data;
@@ -44,36 +41,24 @@ export async function GET(request: Request) {
     });
 
     if (existingVerifiedUser) {
-      return Response.json(
-        {
-          success: false,
-          message: "Username already taken",
-        },
-        {
-          status: 409,
-        }
-      );
+      return sendJsonResponse({
+        success: false,
+        message: "Username already taken",
+        status: 409,
+      });
     } else {
-      return Response.json(
-        {
-          success: true,
-          message: "Username is available",
-        },
-        {
-          status: 200,
-        }
-      );
+      return sendJsonResponse({
+        success: true,
+        message: "Username is available",
+        status: 200
+      });
     }
   } catch (error) {
     console.error("Error checking username", error);
-    return Response.json(
-      {
-        success: false,
-        message: "Error checking username",
-      },
-      {
-        status: 500,
-      }
-    );
+    return sendJsonResponse({
+      success: false,
+      message: "Error checking username",
+      status: 500,
+    });
   }
 }
